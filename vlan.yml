@@ -1,0 +1,27 @@
+---
+- name: Tao VLAN
+  hosts: all
+  gather_facts: no
+  connection: network_cli
+
+  vars:
+    ansible_network_os: ios
+
+  tasks:
+    - name: Tao VLAN
+      ios_vlan:
+        vlan_id: "{{ item.number }}"
+        name: "{{ item.name }}"
+      loop:
+        - { number: "33", name: "phong_nhan_su" }
+        - { number: "34", name: "phong_ke_toan" }
+
+    - name: Show VLAN
+      ios_command:
+        commands:
+          - show vlan brief
+      register: show_vlan
+
+    - name: Debug VLAN
+      debug:
+        var: show_vlan.stdout_lines
